@@ -2,19 +2,20 @@ package writer
 
 import (
   "github.com/datacom/prize/reader"
+  "strings"
 )
 
 func BuildEmail(d *reader.DrawFile) (email string, e error) {
   email_output := `
-      Auckland, 16/03/2014 - Official Results.
+      Auckland, [draw_date] - Official Results.
       RELEASE FROM LOTTO NZ
       ---------------------
       OFFICIAL RESULT CERTIFICATE
       ---------------------------
 
-      Draw Number : 3
-      Draw Date : 16/03/2014
-      Winning Numbers: 963
+      Draw Number : [draw_number]
+      Draw Date : [draw_date]
+      Winning Numbers: [winning_numbers]
 
       ENDS...
 
@@ -24,6 +25,9 @@ func BuildEmail(d *reader.DrawFile) (email string, e error) {
       Lotto NZ
       Auckland
   `
+  email_output = strings.Replace(email_output, "[draw_date]", d.DrawDate, -1)
+  email_output = strings.Replace(email_output, "[draw_number]", d.DrawNumber, -1)
+  email_output = strings.Replace(email_output, "[winning_numbers]", d.WinningNumbers, -1)
 
   return email_output, nil
 }
