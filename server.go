@@ -14,15 +14,23 @@ func main() {
 
   m.Use(render.Renderer(render.Options{
     IndentXML: true,
+    Directory:       "templates",
+    Layout:          "layout",
+    Extensions:      []string{".tmpl", ".html"},
   }))
 
   // e.g.: curl -i -F file=@./data/draw1234.FIL http://localhost:3000/draw/email
+  m.Get("/", ShowHelp)
   m.Post("/draw/email", RenderEmail)
   m.Post("/draw/xml",   RenderXml)
   m.Run()
 }
 
-func RenderEmail(r render.Render, req *http.Request, res http.ResponseWriter){
+func ShowHelp(r render.Render, req *http.Request, res http.ResponseWriter){
+  r.HTML(200, "help", nil)
+}
+
+func RenderEmail(r render.Render, req *http.Request, res http.ResponseWriter) string {
   draw, err := ProcessDraw(req, res)
 
   if err != nil {
@@ -31,7 +39,8 @@ func RenderEmail(r render.Render, req *http.Request, res http.ResponseWriter){
 
   email, err := writer.BuildEmail(draw)
 
-  r.HTML(200, "email", email)
+  return email
+  // r.HTML(200, "email", draw)
 }
 
 func RenderXml(r render.Render, req *http.Request, res http.ResponseWriter){

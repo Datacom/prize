@@ -1,0 +1,14 @@
+<h2>Prize is a small demonstration of a REST API for templating results.</h2>
+
+It ships with a physical draw file "/data/draw1234.FIL" that you can send to the API just like if you had an ESB
+
+On a Linux system, the simplest way to do this is using the curl library to send the file content:
+
+<pre>
+	curl -i -F file=@./data/draw1234.FIL http://localhost:3000/draw/xml
+	curl -i -F file=@./data/draw1234.FIL http://localhost:3000/draw/email
+</pre>
+
+You should get 2 different result back.  1 for an email result, and 1 for XML
+
+The templates used for this API are not compiled, so you can make adjustments to them in the templates directory and call the API again
