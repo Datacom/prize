@@ -2,32 +2,25 @@ package writer
 
 import (
   "github.com/datacom/prize/reader"
-  "strings"
+  "text/template"
+  "bytes"
+  "log"
 )
 
-func BuildEmail(d *reader.DrawFile) (email string, e error) {
-  email_output := `
-      Auckland, [draw_date] - Official Results.
-      RELEASE FROM LOTTO NZ
-      ---------------------
-      OFFICIAL RESULT CERTIFICATE
-      ---------------------------
+func BuildEmail(draw *reader.DrawFile) (email string, e error) {
+  tmpl, err :=template.ParseFiles("templates/email.tmpl")
+  
+  if err != nil {
+    log.Fatal(err)
+  }
 
-      Draw Number : [draw_number]
-      Draw Date : [draw_date]
-      Winning Numbers: [winning_numbers]
+  var doc bytes.Buffer
+  
+  err = tmpl.Execute(&doc, draw)
+  
+  if err != nil {
+    log.Fatal(err)
+  }
 
-      ENDS...
-
-      Issued on behalf of:
-
-      The Chief Executive
-      Lotto NZ
-      Auckland
-  `
-  email_output = strings.Replace(email_output, "[draw_date]", d.DrawDate, -1)
-  email_output = strings.Replace(email_output, "[draw_number]", d.DrawNumber, -1)
-  email_output = strings.Replace(email_output, "[winning_numbers]", d.WinningNumbers, -1)
-
-  return email_output, nil
+  return doc.String(), nil
 }
